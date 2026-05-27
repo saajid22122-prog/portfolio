@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const skills = [
   "Python", "TensorFlow", "OpenCV", "Flask",
