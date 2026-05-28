@@ -1,4 +1,3 @@
-import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 
 const Hero = () => {
@@ -38,7 +37,7 @@ const Hero = () => {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="text-cyan-400 text-sm sm:text-base md:text-lg tracking-wider mt-6"
         >
-          AI Engineer • Full Stack Developer • Hackathon Innovator
+          AI Engineer • Full Stack Developer
         </motion.p>
 
         <motion.p
@@ -49,23 +48,6 @@ const Hero = () => {
         >
           Building intelligent systems and immersive digital experiences focused on solving real-world problems through AI and innovation.
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="flex flex-wrap justify-center gap-4 mt-10"
-        >
-          <Button className="liquid-glass bg-cyan-500/10 text-foreground border border-cyan-500/30 hover:bg-cyan-500/20">
-            Explore Projects
-          </Button>
-          <Button variant="outline" className="border-white/20 hover:border-cyan-400/50">
-            Download Resume
-          </Button>
-          <Button variant="ghost" className="hover:text-cyan-400">
-            Initialize Connection →
-          </Button>
-        </motion.div>
       </div>
     </section>
   );
