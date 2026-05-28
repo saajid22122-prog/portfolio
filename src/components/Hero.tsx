@@ -16,9 +16,6 @@ const Hero = () => {
         src="/background.mp4"
       />
       
-      {/* Subtle dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/40 z-1" />
-      
       {/* Text Content - Bottom Left */}
       <div className="absolute bottom-0 left-0 z-10 p-8 md:p-12 lg:p-16 max-w-2xl">
         <motion.div
