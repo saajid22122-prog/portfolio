@@ -138,7 +138,7 @@ const ProjectArchive = () => {
               </div>
               
               <div className="mt-2 pt-3 border-t border-white/20 text-xs font-mono flex justify-between items-center" style={{ color: project.color }}>
-                <span>⟡ interactive interface</span>
+                <span></span>
                 {project.github !== "#" && (
                   <a href={project.github} target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
                     <Github className="w-4 h-4" />
