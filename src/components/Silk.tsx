@@ -96,7 +96,7 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: any },
     }
   }, [ref, viewport]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (ref.current?.material?.uniforms?.uTime) {
       ref.current.material.uniforms.uTime.value += delta;
     }
