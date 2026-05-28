@@ -4,7 +4,7 @@ const Hero = () => {
   return (
     <section
       id="command-center"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen overflow-hidden"
     >
       {/* Background Video */}
       <video
@@ -19,35 +19,27 @@ const Hero = () => {
       {/* Subtle dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/40 z-1" />
       
-      <div className="relative z-10 text-center px-6 max-w-6xl mx-auto">
-        <motion.h1
+      {/* Text Content - Bottom Left */}
+      <div className="absolute bottom-0 left-0 z-10 p-8 md:p-12 lg:p-16 max-w-2xl">
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[1.1] tracking-tighter"
         >
-          MOHAMMED
-          <br />
-          SAAJID KHAN
-        </motion.h1>
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tighter text-white">
+            MOHAMMED
+            <br />
+            SAAJID KHAN
+          </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-cyan-400 text-sm sm:text-base md:text-lg tracking-wider mt-6"
-        >
-          AI Engineer • Full Stack Developer
-        </motion.p>
+          <p className="text-cyan-400 text-sm sm:text-base md:text-lg tracking-wider mt-4">
+            AI Engineer • Full Stack Developer
+          </p>
 
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-muted-foreground max-w-2xl mx-auto mt-6 text-base sm:text-lg leading-relaxed"
-        >
-          Building intelligent systems and immersive digital experiences focused on solving real-world problems through AI and innovation.
-        </motion.p>
+          <p className="text-white/70 max-w-xl mt-4 text-sm sm:text-base leading-relaxed">
+            Building intelligent systems and immersive digital experiences focused on solving real-world problems through AI and innovation.
+          </p>
+        </motion.div>
       </div>
     </section>
   );
