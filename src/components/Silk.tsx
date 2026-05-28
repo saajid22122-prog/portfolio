@@ -34,12 +34,20 @@ uniform float uScale;
 uniform float uRotation;
 uniform float uNoiseIntensity;
 
-const float e = 2.71828182845904523536;
+// Improved noise function for better flow
+float random (vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
 
-float noise(vec2 texCoord) {
-  float G = e;
-  vec2  r = (G * sin(G * texCoord));
-  return fract(r.x * r.y * (1.0 + texCoord.x));
+float noise(vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+    vec2 u = f*f*(3.0-2.0*f);
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
 
 vec2 rotateUvs(vec2 uv, float angle) {
@@ -50,22 +58,32 @@ vec2 rotateUvs(vec2 uv, float angle) {
 }
 
 void main() {
-  float rnd        = noise(gl_FragCoord.xy);
-  vec2  uv         = rotateUvs(vUv * uScale, uRotation);
-  vec2  tex        = uv * uScale;
-  float tOffset    = uSpeed * uTime;
-
-  tex.y += 0.03 * sin(8.0 * tex.x - tOffset);
-
-  float pattern = 0.6 +
-                  0.4 * sin(5.0 * (tex.x + tex.y +
-                                   cos(3.0 * tex.x + 5.0 * tex.y) +
-                                   0.02 * tOffset) +
-                           sin(20.0 * (tex.x + tex.y - 0.1 * tOffset)));
-
-  vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 15.0 * uNoiseIntensity;
-  col.a = 1.0;
-  gl_FragColor = col;
+  vec2 uv = rotateUvs(vUv * uScale, uRotation);
+  
+  // Create flowing waves
+  float time = uTime * uSpeed;
+  
+  // Multiple wave layers for rich flow
+  float wave1 = sin(uv.x * 3.0 + time) * cos(uv.y * 2.0 - time * 0.7);
+  float wave2 = sin(uv.y * 4.0 - time * 1.2) * 0.6;
+  float wave3 = sin((uv.x * 2.0 + uv.y * 1.5) * 1.8 + time * 1.5) * 0.4;
+  float wave4 = cos((uv.y * 3.0 - uv.x * 2.0) * 1.2 - time) * 0.3;
+  
+  float pattern = 0.5 + (wave1 + wave2 + wave3 + wave4) * 0.35;
+  
+  // Add subtle noise
+  float n = noise(uv * 4.0 + uTime * 0.3) * uNoiseIntensity * 0.15;
+  pattern += n;
+  
+  // Clamp and create color
+  pattern = clamp(pattern, 0.3, 0.9);
+  
+  vec3 finalColor = uColor * pattern;
+  
+  // Add subtle color variation based on waves
+  finalColor += vec3(0.1, 0.05, 0.15) * (wave1 * 0.3);
+  
+  gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
 
@@ -78,16 +96,16 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: any },
     }
   }, [ref, viewport]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (ref.current?.material?.uniforms?.uTime) {
-      ref.current.material.uniforms.uTime.value += 0.1 * delta;
+      ref.current.material.uniforms.uTime.value += delta;
     }
   });
 
   return (
     <mesh ref={ref}>
       <planeGeometry args={[1, 1, 1, 1]} />
-      <shaderMaterial uniforms={uniforms} vertexShader={vertexShader} fragmentShader={fragmentShader} />
+      <shaderMaterial uniforms={uniforms} vertexShader={vertexShader} fragmentShader={fragmentShader} transparent={false} />
     </mesh>
   );
 });
@@ -101,7 +119,7 @@ interface SilkProps {
   rotation?: number;
 }
 
-const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0 }: SilkProps) => {
+const Silk = ({ speed = 1.5, scale = 1.5, color = '#1a3a5c', noiseIntensity = 0.8, rotation = 0.2 }: SilkProps) => {
   const meshRef = useRef();
 
   const uniforms = useMemo(
@@ -117,7 +135,19 @@ const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, r
   );
 
   return (
-    <Canvas dpr={[1, 2]} frameloop="always" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+    <Canvas 
+      dpr={[1, 2]} 
+      frameloop="always" 
+      style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        width: '100%', 
+        height: '100%', 
+        zIndex: 0,
+        pointerEvents: 'none'
+      }}
+    >
       <SilkPlane ref={meshRef} uniforms={uniforms} />
     </Canvas>
   );
